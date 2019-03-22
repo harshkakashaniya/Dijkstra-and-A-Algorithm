@@ -12,7 +12,7 @@ except:
 import cv2
 
 def Map(clearance):
-    Map=255*np.ones((150,250,3))
+    Map=255*np.ones((150,250,3)).astype(np.uint8)
 
 
     for i in range(Map.shape[0]):
@@ -31,25 +31,6 @@ def Map(clearance):
 
             if(i-135<0 and j+0.18*i-181.05<0 and j-9.5*i+768.0<0 and j-0.6*i-67.68>0):
                 Map[i,j]=[0,0,255]
-    '''
-    Y1=170
-    X1=150-90
-    Y2=163
-    X2=150-52
-
-
-    slope=(Y2-Y1)/(X2-X1)
-
-    C=Y1-slope*X1
-
-    print(slope)
-    print(C)
-    '''
-    #cv2.namedWindow('Map',cv2.WINDOW_NORMAL)
-    #cv2.imshow('Map',Map)
-    #cv2.waitKey()
-    #cv2.destroyAllWindows()
-    #cv2.show()
     return Map
 
 def exp_right(Map,explorer,cost,x,y):
@@ -134,7 +115,8 @@ def pointexplore(Map,explorer,cost,x,y):
     cost,explorer=exp_bottom_left(Map,explorer,cost,x,y)
     cost,explorer=exp_bottom_right(Map,explorer,cost,x,y)
     explorer[x,y]=5000
-    return cost,explorer
+    Map[x,y]=[155,155,155]
+    return cost,explorer,Map
 
 def pathfinder(Startx,Starty,Endx,Endy,cost):
     path=np.mat([Endx,Endy])
@@ -153,16 +135,27 @@ def pathfinder(Startx,Starty,Endx,Endy,cost):
 
 def draw(Map,path):
     for i in range(path.shape[0]):
-        Map[path[i,0],path[i,1]]=[0,255,0]
+        Map[path[path.shape[0]-1-i,0],path[path.shape[0]-1-i,1]]=[255,32,160]
+        append_img=Map.copy()
+        #print(i)
+        img_array.append(append_img)
     return Map
 
+def video(img_array):
+    size=(250,150)
+    video=cv2.VideoWriter('video1.avi',cv2.VideoWriter_fourcc(*'DIVX'),50.0,size)
+    for i in range(len(img_array)):
+        #print(len(img_array))
+        #print(np.shape(img_array[i]))
+        video.write(img_array[i])
+    video.release()
 
 #Point_free_space_old=Map(10)
 Point_free_space=Map(0)
 explorer=10000*np.array(np.ones((150,250)),dtype=float)
 cost=10000*np.array(np.ones((150,250,3)),dtype=float)
-Startx=70
-Starty=150
+Startx=1
+Starty=1
 explorer[Startx,Starty]=0
 cost[Startx,Starty]=0
 Endx=149
@@ -175,24 +168,27 @@ if (Point_free_space[Endx,Endy,0]==0):
     print('End point is in obstacle')
     error=1
 
-
+img_array=[]
+count=0
 while(np.min(explorer)<5000 and error==0):
     least=np.argmin(explorer)
     exp_x=int(least/250)
     exp_y=least%250
     print(exp_x)
     print(exp_y)
-    cost,explorer=pointexplore(Point_free_space,explorer,cost,exp_x,exp_y)
+    cost,explorer,Point_free_space=pointexplore(Point_free_space,explorer,cost,exp_x,exp_y)
+    invideo=Point_free_space.copy()
+    img_array.append(invideo)
+    #count += 1
+    #cv2.imwrite('%d.jpg' %count,Point_free_space)
+
 
 if(error==0):
     Path=pathfinder(Startx,Starty,Endx,Endy,cost)
     print(Path)
     Pathmap=draw(Point_free_space,Path)
+
 else:
     Pathmap=Point_free_space
 
-cv2.namedWindow('Map',cv2.WINDOW_NORMAL)
-cv2.imshow('Map',Pathmap)
-cv2.waitKey()
-#cv2.destroyAllWindows()
-#cv2.show()
+video(img_array)
