@@ -14,7 +14,7 @@ import cv2
 def Map(clearance,radius,resolution):
     clearance=(clearance+radius)*resolution
 
-    Map=255*np.ones((150*resolution,250*resolution,3))
+    Map=255*np.ones((int(150*resolution),int(250*resolution),3))
 
 
     for i in range(Map.shape[0]):
@@ -29,13 +29,13 @@ def Map(clearance,radius,resolution):
             if(i-135*resolution-clearance<=0 and j+0.54*i-245.97*resolution+c1<=0 and j-0.60*i-133.68*resolution+c2<=0 and j+0.18*i-181.05*resolution-c3>=0):
                 Map[i,j]=[255,0,0]
 
-            if(i-135*resolution-clearance<=0 and i-135*resolution>=0 and j+0.54*i-245.97*resolution+c1<=0 and j+0.54*i-245.97*resolution>=0 and math.pow(i-135*resolution,2)+math.pow(j-173*resolution,2)-math.pow(clearance,2)>0):
+            if(i-135*resolution-clearance<=0 and i-135*resolution-0.6*clearance>=0 and j+0.54*i-245.97*resolution+c1<=0 and j+0.54*i-245.97*resolution-0.6*clearance>=0 and math.pow(i-135*resolution,2)+math.pow(j-173*resolution,2)-math.pow(clearance,2)>0):
                 Map[i,j]=[255,255,255]
 
-            if(j-0.60*i-133.68*resolution>=0 and j-0.60*i-133.68*resolution+c2<=0 and j+0.54*i-245.97*resolution+c1<=0 and j+0.54*i-245.97*resolution>=0 and math.pow(i-150*resolution+52*resolution,2)+math.pow(j-193*resolution,2)-math.pow(clearance,2)>0):
+            if(j-0.60*i-133.68*resolution-0.6*clearance>=0 and j-0.60*i-133.68*resolution+c2<=0 and j+0.54*i-245.97*resolution+c1<=0 and j+0.54*i-245.97*resolution-0.6*clearance>=0 and math.pow(i-150*resolution+52*resolution,2)+math.pow(j-193*resolution,2)-math.pow(clearance,2)>0):
                 Map[i,j]=[255,255,255]
 
-            if(j-0.60*i-133.68*resolution>=0 and j-0.60*i-133.68*resolution+c2<=0 and j+0.18*i-181.05*resolution-c3>=0 and j+0.18*i-181.05*resolution<=0 and math.pow(i-150*resolution+90*resolution,2)+math.pow(j-170*resolution,2)-math.pow(clearance,2)>=0):
+            if(j-0.60*i-(133.68)*resolution+0.6*clearance>=0 and j-0.60*i-(133.68)*resolution+c2<=0 and j+0.18*i-(181.05)*resolution-c3>=0 and j+0.18*i-(181.05)*resolution-0.6*clearance<=0 and math.pow(i-150*resolution+90*resolution,2)+math.pow(j-170*resolution,2)-math.pow(clearance,2)>=0 ):
                 Map[i,j]=[255,255,255]
 
 
@@ -47,10 +47,10 @@ def Map(clearance,radius,resolution):
             if(i-135*resolution-clearance<=0 and j+0.18*i-181.05*resolution+c4<=0 and j-9.5*i+768.0*resolution+c5<=0 and j-0.6*i-67.68*resolution-c6>=0):
                 Map[i,j]=[255,0,0]
 
-            if(i-135*resolution-clearance<=0 and i-135*resolution>=0 and j-0.6*i-67.68*resolution-c6>=0 and j-0.6*i-67.68*resolution<=0 and math.pow(i-135*resolution,2)+math.pow(j-150*resolution,2)-math.pow(clearance,2)>=0):
+            if(i-135*resolution-clearance-0.2*clearance<=0 and i-(135)*resolution-0.5*clearance>=0 and j-0.6*i-67.68*resolution-c6+0.2*clearance>=0 and j-0.6*i-(67.68)*resolution+0.3*clearance<=0 and math.pow(i-135*resolution,2)+math.pow(j-150*resolution,2)-math.pow(clearance,2)>=0):
                 Map[i,j]=[255,255,255]
 
-            if(j-9.5*i+768.0*resolution+c5<=0 and j-9.5*i+768.0*resolution>=0 and j-0.6*i-67.68*resolution-c6>=0 and j-0.6*i-67.68*resolution<=0 and math.pow(i-150*resolution+56*resolution,2)+math.pow(j-125*resolution,2)-math.pow(clearance,2)>=0):
+            if(j-9.5*i+(768.0)*resolution+c5<=0 and j-9.5*i+(768.0)*resolution+5*clearance>=0 and j-0.6*i-(67.68)*resolution+0.6*clearance-c6>=0 and j-0.6*i-(67.68)*resolution-0.6*clearance<=0 and math.pow(i-150*resolution+56*resolution,2)+math.pow(j-125*resolution,2)-math.pow(clearance,2)>=0):
                 Map[i,j]=[255,255,255]
 
             #for rectrangle
@@ -63,7 +63,7 @@ def Map(clearance,radius,resolution):
             if(j>=50*resolution-clearance and j<=50*resolution and i<=37.5*resolution+45*resolution+clearance and i>=37.5*resolution+45*resolution and math.pow(i-37.5*resolution-45*resolution,2)+math.pow(j-50*resolution,2)-math.pow(clearance,2)>0):
                 Map[i,j]=[255,255,255]
 
-            if(j<=100*resolution+clearance and j>=100*resolution and i<=37.5*resolution+45*resolution+clearance and i>=37.5*resolution+45*resolution and math.pow(i-37.5*resolution-45*resolution,2)+math.pow(j-100*resolution,2)-math.pow(clearance,2)>0):
+            if(j<=100*resolution+clearance and j>=100*resolution and i<=37.5*resolution+45*resolution+clearance and i>=37.5*resolution+45*resolution and math.pow(i-37.5*resolution-45*resolution,2)+math.pow(j-100*resolution,2)-math.pow(clearance,2)>0 and radius<14 ):
                 Map[i,j]=[255,255,255]
 
             if(j<=100*resolution+clearance and j>=100*resolution and i>=37.5*resolution-clearance and i<=37.5*resolution and math.pow(i-37.5*resolution,2)+math.pow(j-100*resolution,2)-math.pow(clearance,2)>0):
@@ -117,4 +117,4 @@ def Map(clearance,radius,resolution):
     #cv2.show()
     return Map
 
-koko=Map(0,10,5)
+koko=Map(0,10,1)
