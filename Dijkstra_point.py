@@ -25,7 +25,7 @@ def Map(clearance,radius,resolution):
             c2=clearance/math.sin(math.atan(0.60)-math.pi/2)
             c3=clearance/math.sin(math.atan(-0.18)-math.pi/2)
 
-            if(i-135*resolution-clearance<0 and j+0.54*i-245.97*resolution+c1<=0 and j-0.60*i-133.68*resolution+c2<=0 and j+0.18*i-181.05*resolution-c3>=0):
+            if(i-135*resolution-clearance<0 and j+0.54*i-245.97*resolution+c1<0 and j-0.60*i-133.68*resolution+c2<0 and j+0.18*i-181.05*resolution-c3>0):
                 Map[i,j]=[0,255,0]
 
             if(i-135*resolution-clearance<0 and i-135*resolution-0.6*clearance>=0 and j+0.54*i-245.97*resolution+c1<=0 and j+0.54*i-245.97*resolution-0.6*clearance>=0 and math.pow(i-135*resolution,2)+math.pow(j-173*resolution,2)-math.pow(clearance,2)>0):
@@ -43,7 +43,7 @@ def Map(clearance,radius,resolution):
             c6=clearance/math.sin(math.atan(0.6)-math.pi/2)
 
             #for polygon left
-            if(i-135*resolution-clearance<0 and j+0.18*i-181.05*resolution+c4<=0 and j-9.5*i+768.0*resolution+c5<=0 and j-0.6*i-67.68*resolution-c6>=0):
+            if(i-135*resolution-clearance<0 and j+0.18*i-181.05*resolution+c4<0 and j-9.5*i+768.0*resolution+c5<0 and j-0.6*i-67.68*resolution-c6>0):
                 Map[i,j]=[0,255,0]
 
             if(i-135*resolution-clearance-0.2*clearance<0 and i-(135)*resolution-0.5*clearance>=0 and j-0.6*i-67.68*resolution-c6+0.2*clearance>=0 and j-0.6*i-(67.68)*resolution+0.3*clearance<=0 and math.pow(i-135*resolution,2)+math.pow(j-150*resolution,2)-math.pow(clearance,2)>=0):
@@ -69,11 +69,11 @@ def Map(clearance,radius,resolution):
                 Map[i,j]=[255,255,255]
 
             #for circle
-            if((math.pow(i-20*resolution,2)+math.pow(j-190*resolution,2))-math.pow(15*resolution+clearance,2)<=0):
+            if((math.pow(i-20*resolution,2)+math.pow(j-190*resolution,2))-math.pow(15*resolution+clearance,2)<0):
                 Map[i,j]=[0,255,0]
 
             #for ellipse
-            if((math.pow(i-30*resolution,2)/math.pow(6*resolution+clearance,2))+math.pow(j-140*resolution,2)/math.pow(15*resolution+clearance,2)<=1):
+            if((math.pow(i-30*resolution,2)/math.pow(6*resolution+clearance,2))+math.pow(j-140*resolution,2)/math.pow(15*resolution+clearance,2)<1):
                 Map[i,j]=[0,255,0]
 
     for i in range(Map.shape[0]):
@@ -134,8 +134,8 @@ def exp_bottom(Map,explorer,cost,x,y):
 
 def exp_top_right(Map,explorer,cost,x,y):
     if(x-1>-1 and y+1<int(250*resolution) and Map[x-1,y+1,0]==255):
-        if(cost[x,y,0]+1.414<cost[x-1,y+1,0]):
-            cost[x-1,y+1,0]=cost[x,y,0]+1.414
+        if(cost[x,y,0]+np.sqrt(2)<cost[x-1,y+1,0]):
+            cost[x-1,y+1,0]=cost[x,y,0]+np.sqrt(2)
             cost[x-1,y+1,1]=x
             cost[x-1,y+1,2]=y
             explorer[x-1,y+1]=cost[x-1,y+1,0]
@@ -143,8 +143,8 @@ def exp_top_right(Map,explorer,cost,x,y):
 
 def exp_top_left(Map,explorer,cost,x,y):
     if(x-1>-1 and y-1>-1 and Map[x-1,y-1,0]==255):
-        if(cost[x,y,0]+1.414<cost[x-1,y-1,0]):
-            cost[x-1,y-1,0]=cost[x,y,0]+1.414
+        if(cost[x,y,0]+np.sqrt(2)<cost[x-1,y-1,0]):
+            cost[x-1,y-1,0]=cost[x,y,0]+np.sqrt(2)
             cost[x-1,y-1,1]=x
             cost[x-1,y-1,2]=y
             explorer[x-1,y-1]=cost[x-1,y-1,0]
@@ -152,8 +152,8 @@ def exp_top_left(Map,explorer,cost,x,y):
 
 def exp_bottom_left(Map,explorer,cost,x,y):
     if(x+1<int(150*resolution) and y-1>-1 and Map[x+1,y-1,0]==255):
-        if(cost[x,y,0]+1.414<cost[x+1,y-1,0]):
-            cost[x+1,y-1,0]=cost[x,y,0]+1.414
+        if(cost[x,y,0]+np.sqrt(2)<cost[x+1,y-1,0]):
+            cost[x+1,y-1,0]=cost[x,y,0]+np.sqrt(2)
             cost[x+1,y-1,1]=x
             cost[x+1,y-1,2]=y
             explorer[x+1,y-1]=cost[x+1,y-1,0]
@@ -161,8 +161,8 @@ def exp_bottom_left(Map,explorer,cost,x,y):
 
 def exp_bottom_right(Map,explorer,cost,x,y):
     if(x+1<int(150*resolution) and y+1<int(250*resolution) and Map[x+1,y+1,0]==255):
-        if(cost[x,y,0]+1.414<cost[x+1,y+1,0]):
-            cost[x+1,y+1,0]=cost[x,y,0]+1.414
+        if(cost[x,y,0]+np.sqrt(2)<cost[x+1,y+1,0]):
+            cost[x+1,y+1,0]=cost[x,y,0]+np.sqrt(2)
             cost[x+1,y+1,1]=x
             cost[x+1,y+1,2]=y
             explorer[x+1,y+1]=cost[x+1,y+1,0]
@@ -212,46 +212,67 @@ def video(img_array):
     video.release()
 
 #Point_free_space_old=Map(10)
-clearance,radius,resolution=0,0,1
+clearance=int(input('value of Clearance \n'))
+radius=int(input('value of Radius \n'))
+resolution=float(input('value of Resolution \n'))
+
 Point_free_space=Map(clearance,radius,resolution)
 print("Map is ready")
 explorer=1000000*np.array(np.ones((int(150*resolution),int(250*resolution))),dtype=float)
 cost=1000000*np.array(np.ones((int(150*resolution),int(250*resolution),3)),dtype=float)
-Startx=0
-Starty=0
-explorer[Startx,Starty]=0
-cost[Startx,Starty]=0
-Endx=int(149*resolution)
-Endy=int(249*resolution)
+print("Import co-ordinates of x between 0 &",int(150*resolution)-1 )
+print("Import co-ordinates of y between 0 &",int(250*resolution)-1 )
+
 error=0
-if (Point_free_space[Startx,Starty,0]==0):
-    print('Start point is in obstacle')
+Startx=int(input('value of Start x \n'))
+Starty=int(input('value of Start y \n'))
+Endx=int(input('value of Goal x \n'))
+Endy=int(input('value of Goal y \n'))
+
+
+if (Startx<0 or Startx>(int(150*resolution)-1) or Starty<0 or Starty>(int(250*resolution)-1)):
+    print('Start point out of bound')
     error=1
-if (Point_free_space[Endx,Endy,0]==0):
-    print('End point is in obstacle')
+
+if (Endx<0 or Endx>int(150*resolution)-1 or Endy<0 or Endy>int(250*resolution)-1):
+    print('End point out of bound')
     error=1
+
+if (error==0):
+    if (Point_free_space[Startx,Starty,0]==0):
+        print('Start point is in obstacle')
+        error=1
+    if (Point_free_space[Endx,Endy,0]==0):
+        print('End point is in obstacle')
+        error=1
+    explorer[Startx,Starty]=0
+    cost[Startx,Starty]=0
+    Point_free_space[Startx,Starty]=[255,100,20]
+    Point_free_space[Endx,Endy]=[255,100,20]
 
 img_array=[]
 count=0
 #print('idher hu')
-while(np.min(explorer)<500000 and error==0):
-    least=np.argmin(explorer)
-    exp_x=int(least/(250*resolution))
-    exp_y=int(least%(250*resolution))
-    #print(exp_x)
-    #print(exp_y)
-    cost,explorer,Point_free_space=pointexplore(Point_free_space,explorer,cost,exp_x,exp_y)
-    invideo=Point_free_space.copy()
-    cv2.namedWindow('Map', cv2.WINDOW_NORMAL)
-    cv2.imshow('Map',invideo)
-    cv2.waitKey(1)
-    #img_array.append(invideo)
-    count += 1
-    print(count)
-print(cost[Endx,Endy,0])
-if(error==0):
+if (error==0):
+    while(np.min(explorer)<500000):
+        least=np.argmin(explorer)
+        exp_x=int(least/(250*resolution))
+        exp_y=int(least%(250*resolution))
+        #print(exp_x)
+        #print(exp_y)
+        cost,explorer,Point_free_space=pointexplore(Point_free_space,explorer,cost,exp_x,exp_y)
+        invideo=Point_free_space.copy()
+        cv2.namedWindow('Map', cv2.WINDOW_NORMAL)
+        cv2.imshow('Map',invideo)
+        cv2.waitKey(1)
+        #img_array.append(invideo)
+        count += 1
+        #print(count)
+
+    #print(distance[Startx,Starty],'Minimum distance')
+    print(cost[Endx,Endy,0],'Calculated Distance')
     Path=pathfinder(Startx,Starty,Endx,Endy,cost)
-    print(Path)
+    #print(Path)
     Pathmap=draw(Point_free_space,Path)
 
 else:
