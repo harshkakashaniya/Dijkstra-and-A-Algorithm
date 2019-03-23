@@ -1,8 +1,8 @@
 '''
 /**
-* @file Dijkstra_point.py
+* @file A*_rigid.py
 * @author Kakashaniya Harsh
-* @date 22 Mar 2019
+* @date 23 Mar 2019
 * @copyright 2019 Kakashaniya Harsh
 * @brief <brief>
 */
@@ -93,6 +93,10 @@ def Map(clearance,radius,resolution):
             #for ellipse
             if((math.pow(i-30*resolution,2)/math.pow(6*resolution+clearance,2))+math.pow(j-140*resolution,2)/math.pow(15*resolution+clearance,2)<1):
                 Map[i,j]=[0,255,0]
+
+            if (j<radius*resolution or j>(250-radius)*resolution or i<radius*resolution or i>(150-radius)*resolution):
+                Map[i,j]=[0,255,0]
+
 
     for i in range(Map.shape[0]):
         for j in range(Map.shape[1]):
@@ -290,18 +294,30 @@ def pathfinder(Startx,Starty,Endx,Endy,cost):
 * @details This function colours the path.
 '''
 def draw(Map,path):
+    Map_refresh=Map.copy()
     for i in range(path.shape[0]):
-        Map[path[path.shape[0]-1-i,0],path[path.shape[0]-1-i,1]]=[255,32,160]
-        invideo=Map.copy()
+        path_x=path[path.shape[0]-1-i,0]
+        path_y=path[path.shape[0]-1-i,1]
+        Map[path_x,path_y]=[255,32,160]
+        for i in range(Map.shape[0]):
+            for j in range(Map.shape[1]):
+                if((math.pow(i-path_x,2)+math.pow(j-path_y,2))<math.pow(radius*resolution,2)):
+                    Map_refresh[i,j]=[255,32,160]
+                else:
+                    Map_refresh[i,j]=[255,255,255]
+        Map_final=Map+Map_refresh
+        invideo=Map_final.copy()
         cv2.imshow('Map',invideo)
+        #cv2.imshow('Map',invideo2)
         if(resolution<3):
-            cv2.waitKey(int(10/resolution))
+            cv2.waitKey(int(5/resolution))
         else:
             cv2.waitKey(1)
     print('Output will stay for 5 seconds')
     cv2.imshow('Map',invideo)
     cv2.waitKey(5000)
     return Map
+
 '''
 /**
 * @brief video
@@ -317,13 +333,14 @@ def video(img_array):
     video.release()
 
 # initialization matrix
-clearance=0
-radius=0
-resolution=float(input('value of Resolution \n'))
+clearance=float(input('Value of Clearance \n'))
+radius=float(input('Value of Radius \n'))
+resolution=float(input('Value of Resolution \n'))
 print("Map is getting ready")
 
 explorer=1000000*np.array(np.ones((int(150*resolution),int(250*resolution))),dtype=float)
 cost=1000000*np.array(np.ones((int(150*resolution),int(250*resolution),3)),dtype=float)
+distance=np.array(np.ones((int(150*resolution),int(250*resolution))),dtype=float)
 Point_free_space=Map(clearance,radius,resolution)
 print("Map is ready")
 
@@ -332,8 +349,8 @@ cv2.namedWindow('Map', cv2.WINDOW_NORMAL)
 cv2.imshow('Map',Point_free_space)
 cv2.waitKey(2000)
 # input user variables
-print("Input co-ordinates of x between 0 &",int(150*resolution)-1 )
-print("Input co-ordinates of y between 0 &",int(250*resolution)-1 )
+print("Input co-ordinates of x between", int(radius*resolution)+1,"&",int(150*resolution)-int(radius*resolution)-1 )
+print("Input co-ordinates of y between",int(radius*resolution)+1,"&",int(250*resolution)-int(radius*resolution)-1 )
 error=0
 Startx=int(input('value of Start x \n'))
 Starty=int(input('value of Start y \n'))
@@ -362,13 +379,24 @@ if (error==0):
     Point_free_space[Endx,Endy]=[255,100,20]
     Path_map=Point_free_space.copy()
 
+#-------------------------------------------------------------------------------
+for i in range(distance.shape[0]):
+    for j in range(distance.shape[1]):
+        if(np.abs(i-Endx)>np.abs(j-Endy)):
+            distance[i,j]=np.abs(np.abs(i-Endx)-np.abs(j-Endy))*1 +np.abs(j-Endy)*np.sqrt(2)
+        else:
+            distance[i,j]=np.abs(np.abs(i-Endx)-np.abs(j-Endy))*1 +np.abs(i-Endx)*np.sqrt(2)
+#-------------------------------------------------------------------------------
+
+
+
 img_array=[]
 count=0
 
 # Main loop to explore
 if (error==0):
-    while(np.min(explorer)<500000):
-        least=np.argmin(explorer)
+    while(explorer[Endx,Endy]!=500000):
+        least=np.argmin(explorer+distance)
         exp_x=int(least/(250*resolution))
         exp_y=int(least%(250*resolution))
         #print(exp_x)
@@ -381,11 +409,13 @@ if (error==0):
         count += 1
         #print(count)
 
-    #print(distance[Startx,Starty],'Minimum distance')
+
+
     if (cost[Endx,Endy,0]>500000):
         print('Not possible to reach goal because of Obstacles')
     else:
         print(cost[Endx,Endy,0],'Calculated Distance')
+        print(distance[Startx,Starty],'Minimum distance')
         Path=pathfinder(Startx,Starty,Endx,Endy,cost)
         Pathmap=draw(Path_map,Path)
 

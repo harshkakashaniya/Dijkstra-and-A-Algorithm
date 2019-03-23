@@ -1,6 +1,6 @@
 '''
 /**
-* @file Dijkstra_point.py
+* @file A*_point.py
 * @author Kakashaniya Harsh
 * @date 22 Mar 2019
 * @copyright 2019 Kakashaniya Harsh
@@ -324,6 +324,7 @@ print("Map is getting ready")
 
 explorer=1000000*np.array(np.ones((int(150*resolution),int(250*resolution))),dtype=float)
 cost=1000000*np.array(np.ones((int(150*resolution),int(250*resolution),3)),dtype=float)
+distance=np.array(np.ones((int(150*resolution),int(250*resolution))),dtype=float)
 Point_free_space=Map(clearance,radius,resolution)
 print("Map is ready")
 
@@ -362,13 +363,22 @@ if (error==0):
     Point_free_space[Endx,Endy]=[255,100,20]
     Path_map=Point_free_space.copy()
 
+#-------------------------------------------------------------------------------
+for i in range(distance.shape[0]):
+    for j in range(distance.shape[1]):
+        if(np.abs(i-Endx)>np.abs(j-Endy)):
+            distance[i,j]=np.abs(np.abs(i-Endx)-np.abs(j-Endy))*1 +np.abs(j-Endy)*np.sqrt(2)
+        else:
+            distance[i,j]=np.abs(np.abs(i-Endx)-np.abs(j-Endy))*1 +np.abs(i-Endx)*np.sqrt(2)
+#-------------------------------------------------------------------------------
+
 img_array=[]
 count=0
 
 # Main loop to explore
 if (error==0):
-    while(np.min(explorer)<500000):
-        least=np.argmin(explorer)
+    while(explorer[Endx,Endy]!=500000):
+        least=np.argmin(explorer+distance)
         exp_x=int(least/(250*resolution))
         exp_y=int(least%(250*resolution))
         #print(exp_x)
@@ -381,11 +391,12 @@ if (error==0):
         count += 1
         #print(count)
 
-    #print(distance[Startx,Starty],'Minimum distance')
+
     if (cost[Endx,Endy,0]>500000):
         print('Not possible to reach goal because of Obstacles')
     else:
         print(cost[Endx,Endy,0],'Calculated Distance')
+        print(distance[Startx,Starty],'Minimum distance')
         Path=pathfinder(Startx,Starty,Endx,Endy,cost)
         Pathmap=draw(Path_map,Path)
 
