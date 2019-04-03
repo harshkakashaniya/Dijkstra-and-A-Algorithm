@@ -4,7 +4,7 @@
 * @author Kakashaniya Harsh
 * @date 22 Mar 2019
 * @copyright 2019 Kakashaniya Harsh
-* @brief Implementation of A* algorithm.
+* @brief Implementation of A* algorithm on point robots
 */
 '''
 
@@ -152,7 +152,7 @@ def irregular(Map,resolution,radius,clearance,i,j):
     c6=clearance/math.sin(math.atan(m5)-math.pi/2)
 
     #for polygon left
-    if(i-X1-clearance<=0 and j-m3*i-con3+c4<=0 and j-m4*i-con4+c5<=0 and j-m5*i-con5-c6>=0):
+    if(i-X1-clearance<=0 and j-m3*i-con3+c4<=0 and j-m4*i-con4+c5<0 and j-m5*i-con5-c6>=0):
         Map[i,j]=[0,255,0]
     if(resolution>0.5):
         if(i-X1-clearance-0.2*clearance<=0 and i-(X1)-0.5*clearance>=0 and j-m5*i-con5-c6+0.2*clearance>=0 and j-m5*i-(con5)+0.3*clearance<=0 and math.pow(i-X1,2)+math.pow(j-Y6,2)-math.pow(clearance,2)>=0):
@@ -164,7 +164,7 @@ def irregular(Map,resolution,radius,clearance,i,j):
     if(i-X1<=0 and j-m1*i-con1<=0 and j-m2*i-con2<=0 and j-m3*i-con3>=0):
         Map[i,j]=[0,0,150]
 
-    if(i-X1<=0 and j-m3*i-con3<=0 and j-m4*i-con4<=0 and j-m5*i-con5>=0):
+    if(i-X1<=0 and j-m3*i-con3<=0 and j-m4*i-con4<0 and j-m5*i-con5>=0):
         Map[i,j]=[0,0,150]
 
     return Map
@@ -454,7 +454,7 @@ print("Map is getting ready")
 if (reso!=5 and reso!=2 and reso!=1 and reso!=0.5 and reso!=0.25 and reso!=0.2):
     error=1
     print('Resolution wrong!!!!')
-    print('Please enter it as specified above')
+    print('Please enter resolution as specified above')
 
 
 if (error==0):
@@ -473,14 +473,14 @@ if (error==0):
     print("Input co-ordinates of x between 0 &",int(250*resolution)-1 )
     print("Input co-ordinates of y between 0 &",int(150*resolution)-1 )
     error=0
-    Startx_input=int(input('Value of Start x \n'))
-    Starty_input=int(input('Value of Start y \n'))
-    Endx_input=int(input('Value of Goal x \n'))
-    Endy_input=int(input('Value of Goal y \n'))
-    Starty=Startx_input
-    Startx=int(150*resolution)-1-Starty_input
-    Endy=Endx_input
-    Endx=int(150*resolution)-1-Endy_input
+    Startx_input=float(input('Value of Start x \n'))
+    Starty_input=float(input('Value of Start y \n'))
+    Endx_input=float(input('Value of Goal x \n'))
+    Endy_input=float(input('Value of Goal y \n'))
+    Starty=int(Startx_input)
+    Startx=int(150*resolution)-1-int(Starty_input)
+    Endy=int(Endx_input)
+    Endx=int(150*resolution)-1-int(Endy_input)
     # Error conditions
     if (Startx<0 or Startx>(int(150*resolution)-1) or Starty<0 or Starty>(int(250*resolution)-1)):
         print('Start point out of bound')
